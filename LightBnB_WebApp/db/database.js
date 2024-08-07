@@ -55,11 +55,17 @@ const addUser = function(user) {
  */
 const getAllReservations = function(guest_id, limit = 10) {
   const query = `
-    SELECT reservations.*, properties.*, users.*
+    SELECT 
+      reservations.*, 
+      properties.*, 
+      AVG(property_reviews.rating) as average_rating
     FROM reservations
     JOIN properties ON reservations.property_id = properties.id
-    JOIN users ON reservations.guest_id = users.id
+    LEFT JOIN property_reviews ON properties.id = property_reviews.property_id
     WHERE reservations.guest_id = $1
+    AND reservations.end_date < NOW()::date
+    GROUP BY reservations.id, properties.id
+    ORDER BY reservations.start_date
     LIMIT $2;
   `;
   
@@ -67,7 +73,6 @@ const getAllReservations = function(guest_id, limit = 10) {
     .then(res => res.rows)
     .catch(err => console.error('query error', err.stack));
 };
-
 /// Properties
 
 /**
