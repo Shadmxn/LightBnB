@@ -91,31 +91,26 @@ const getAllProperties = function (options, limit = 10) {
 
   const whereConditions = [];
 
-  // Add city filter, if provided
   if (options.city) {
     queryParams.push(`%${options.city}%`);
     whereConditions.push(`city LIKE $${queryParams.length}`);
   }
 
-  // Add owner_id filter, if provided
   if (options.owner_id) {
     queryParams.push(options.owner_id);
     whereConditions.push(`owner_id = $${queryParams.length}`);
   }
 
-  // Add minimum price filter, if provided
   if (options.minimum_price_per_night) {
     queryParams.push(options.minimum_price_per_night * 100); // store in cents
     whereConditions.push(`cost_per_night >= $${queryParams.length}`);
   }
 
-  // Add maximum price filter, if provided
   if (options.maximum_price_per_night) {
     queryParams.push(options.maximum_price_per_night * 100); // store in cents
     whereConditions.push(`cost_per_night <= $${queryParams.length}`);
   }
 
-  // Incorporate all the where conditions into the query string
   if (whereConditions.length > 0) {
     queryString += `WHERE ${whereConditions.join(' AND ')} `;
   }
@@ -126,7 +121,6 @@ const getAllProperties = function (options, limit = 10) {
 
   const havingConditions = [];
 
-  // Add minimum rating filter, if provided
   if (options.minimum_rating) {
     queryParams.push(options.minimum_rating);
     havingConditions.push(`avg(property_reviews.rating) >= $${queryParams.length}`);
@@ -136,7 +130,6 @@ const getAllProperties = function (options, limit = 10) {
     queryString += `HAVING ${havingConditions.join(' AND ')} `;
   }
 
-  // Final parts of the query
   queryParams.push(limit);
   queryString += `
     ORDER BY cost_per_night
@@ -153,12 +146,54 @@ const getAllProperties = function (options, limit = 10) {
  * @param {{}} property An object containing all of the property details.
  * @return {Promise<{}>} A promise to the property.
  */
-const addProperty = function (property) {
-  const propertyId = Object.keys(properties).length + 1;
-  property.id = propertyId;
-  properties[propertyId] = property;
-  return Promise.resolve(property);
-};
+const addProperty = function(property) {
+  
+  const queryString = `
+    INSERT INTO properties (
+      owner_id, 
+      title, 
+      description, 
+      thumbnail_photo_url, 
+      cover_photo_url, 
+      cost_per_night, 
+      street, 
+      city, 
+      province, 
+      post_code, 
+      country, 
+      parking_spaces, 
+      number_of_bathrooms, 
+      number_of_bedrooms
+    ) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+    RETURNING *;
+  `;
+
+  const values = [
+    property.owner_id,
+    property.title,
+    property.description,
+    property.thumbnail_photo_url,
+    property.cover_photo_url,
+    property.cost_per_night,
+    property.street,
+    property.city,
+    property.province,
+    property.post_code,
+    property.country,
+    property.parking_spaces,
+    property.number_of_bathrooms,
+    property.number_of_bedrooms
+  ];
+
+  return db.query(queryString, values)
+    .then(res => {
+      return res.rows[0];
+    })
+    .catch(err => {
+      return console.log('query error:', err);
+    })
+}
 
 module.exports = {
   getUserWithEmail,
