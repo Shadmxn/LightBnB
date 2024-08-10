@@ -186,7 +186,7 @@ const addProperty = function(property) {
     property.number_of_bedrooms
   ];
 
-  return db.query(queryString, values)
+  return pool.query(queryString, values)
     .then(res => {
       return res.rows[0];
     })
