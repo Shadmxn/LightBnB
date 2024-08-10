@@ -1,9 +1,5 @@
 # Lighthouse BnB
 
-## Project Description
-
-Welcome to Lighthouse BnB! This project is a hands-on learning experience focused on designing a database and using server-side JavaScript to display information from SQL queries on web pages. You'll apply your knowledge of complex SQL queries, database design, and ERD (Entity Relationship Diagram) concepts to integrate a fully functional database with a Node.js backend.
-
 ## About Lighthouse BnB
 
 Lighthouse BnB is an app that will revolutionize the travel industry. It will allow homeowners to rent out their homes to people on vacation, creating an alternative to hotels and bed and breakfasts...There’s nothing else like it! Users can view property information, book reservations, view their reservations, and write reviews.
@@ -15,6 +11,14 @@ Lighthouse BnB is an app that will revolutionize the travel industry. It will al
 - View their past and upcoming reservations
 - Write reviews for properties they've stayed at
 - This project will simulate the development of a cutting-edge application, pioneering a new approach to vacation rentals.
+
+### Geting Started
+
+Create a new repository using this repository as a template.
+Clone your repository onto your local device.
+Install dependencies using the npm install command.
+Start the web server using the npm run local command in LightBnB_WebApp file. The app will be served at http://localhost:3000/.
+Go to http://localhost:3000/ in your browser.
 
 Photos:
 
